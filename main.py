@@ -67,7 +67,7 @@ async def help(ctx, cat= None ):
                     msg += f"[ {bot.user} ]\n\nType <prefix>help <ext_name> to view commands relating to a specific extension. Type <prefix>help <cmd_name> to view information regarding a command.\n\n[ .Prefixes ] : {bot.prefixes}\n\n"
                     msg += f"[ .{cmd.name} ]\n"
                     msg += f"[ Description ] : [ {cmd.description} ]\n"
-                    msg += f"[ Aliases ] : [ {cmd.aliases} ]\n"
+                    msg += f"[ Aliases ] : {cmd.aliases} \n"
                     msg += f"```"
                     return await ctx.reply(f"{msg}")
             for ext in bot.extensions:
