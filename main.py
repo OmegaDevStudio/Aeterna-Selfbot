@@ -32,9 +32,12 @@ GUILDS: {len(bot.user.guilds)}
 FRIENDS: {len(bot.user.friends)}
 
 STARTUP:  {time:0.2f} seconds{Color.RESET}""")
+    await bot.change_presence(status="Online", afk=False, activity=selfcord.Activity.Game(name="Aeterna", details="With your mother", state="vibing", buttons={"Server": "https://discord.gg/9KtaxZKewk", "Wrapper": "https://pypi.org/project/selfcord.py/"}, application_id="1100082565811015720", key="omega_blue"))
 
 @bot.cmd(description="The Help Command", aliases=['h'])
 async def help(ctx, cat= None ):
+    """The help command, dedicated to viewing all commands, extensions and information regarding commands.
+    """
     if cat is None:
         msg = f"```ini\n[ Aeterna Selfbot ]\n"
         msg += f"[ {bot.user} ]\nType <prefix>help <ext_name> to view commands relating to a specific extension. Type <prefix>help <cmd_name> to view information regarding a command.\n[ .Prefixes ] : {bot.prefixes}\n\n"
@@ -57,7 +60,7 @@ async def help(ctx, cat= None ):
                 msg += f"[ .Commands ]\n"
                 for command in ext.commands:
                     if command.ext == ext.ext:
-                        msg += f"{command.name}: {command.description}\n"
+                        msg += f". {command.name}: {command.description}\n"
 
                 msg += f"```"
                 return await ctx.reply(f"{msg}")
@@ -67,7 +70,8 @@ async def help(ctx, cat= None ):
                     msg = f"```ini\n[ Aeterna Selfbot ]\n"
                     msg += f"[ {bot.user} ]\n\nType <prefix>help <ext_name> to view commands relating to a specific extension. Type <prefix>help <cmd_name> to view information regarding a command.\n\n[ .Prefixes ] : {bot.prefixes}\n\n"
                     msg += f"[ .{cmd.name} ]\n"
-                    msg += f"[ Description ] : [ {cmd.description} ]\n"
+                    msg += f"[ Description ] :  {cmd.description} \n"
+                    msg += f"[ Long Description ] :\n{cmd.func.__doc__}\n"
                     msg += f"[ Aliases ] : {cmd.aliases} \n"
                     args = inspect.signature(cmd.func)
                     msg += f"\n[ Example Usage ] :\n[ {bot.prefixes[0]}{cmd.aliases[0]}"
@@ -85,7 +89,8 @@ async def help(ctx, cat= None ):
                         msg = f"```ini\n[ Aeterna Selfbot ]\n"
                         msg += f"[ {bot.user} ]\n\nType <prefix>help <ext_name> to view commands relating to a specific extension. Type <prefix>help <cmd_name> to view information regarding a command.\n\n[ .Prefixes ] : {bot.prefixes}\n\n"
                         msg += f"[ .{cmd.name} ]\n"
-                        msg += f"[ Description ] : [ {cmd.description} ]\n"
+                        msg += f"[ Description ] :  {cmd.description} \n"
+                        msg += f"[ Long Description ] :\n{cmd.func.__doc__}\n"
                         msg += f"[ Aliases ] :  {cmd.aliases} \n"
                         args = inspect.signature(cmd.func)
                         msg += f"\n[ Example Usage ] :\n[ {bot.prefixes[0]}{cmd.aliases[0]}"

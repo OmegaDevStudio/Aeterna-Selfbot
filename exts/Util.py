@@ -17,6 +17,8 @@ class Ext(Extender, name="Util", description="Uttility related commands here"):
 
     @Extender.cmd(description="Gathers information regarding token", aliases=['tdox', 'tinfo'])
     async def tokeninfo(self, ctx, _token: str):
+        """Gathers information regarding a token, works for both bot tokens and user tokens.
+        """
         await ctx.message.delete()
         async with ClientSession() as session:
             async with session.get("https://discord.com/api/v9/users/@me", headers={"authorization": f"Bot {_token}"})as resp:
@@ -46,6 +48,8 @@ class Ext(Extender, name="Util", description="Uttility related commands here"):
 
     @Extender.cmd(description="Toggles Nitro Sniper", aliases=['nsnipe', 'nsniper'])
     async def nitrosniper(self, ctx, toggle):
+        """Toggles the nitro sniper, the nitro sniper attempts to redeem any nitro gift code immediately as the gateway receives it. Information whether the redeeming of the gift was successful or not is displayed via the console.
+        """
         if toggle.lower() == "on" or toggle.lower() == "true":
             self.nitro_toggle = True
             await ctx.reply(f"```ini\n[ Nitro Sniper is ON ]```")
@@ -55,6 +59,8 @@ class Ext(Extender, name="Util", description="Uttility related commands here"):
 
     @Extender.cmd(description="Toggles Message Logger", aliases=['msgsniper', 'msglogger', 'msgsnipe', 'msnipe'])
     async def messagesniper(self, ctx, toggle):
+        """Toggles the message sniper, attempts to display deleted messages via the console, can only gather the full data of deleted messages after the bot starts running since they are cached, messages prior are not cached and therefore cannot be completely logged.
+        """
         if toggle.lower() == "on" or toggle.lower() == "true":
             self.msg_toggle = True
             await ctx.reply(f"```ini\n[ Message Logger is ON ]```")
@@ -64,6 +70,8 @@ class Ext(Extender, name="Util", description="Uttility related commands here"):
 
     @Extender.cmd(description="Toggles Invite Logger", aliases=['invlog', 'invlogger', 'ilog', 'ilogger'])
     async def invitelogger(self, ctx, toggle):
+        """Toggles the invite logger, attempts to display any/all invites posted in chat via the console.
+        """
         if toggle.lower() == "on" or toggle.lower() == "true":
             self.inv_toggle = True
             await ctx.reply(f"```ini\n[ Invite Logger is ON ]```")
