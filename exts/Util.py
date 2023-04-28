@@ -79,6 +79,10 @@ class Ext(Extender, name="Util", description="Uttility related commands here"):
             self.inv_toggle = False
             await ctx.reply(f"```ini\n[ Invite Logger is OFF ]```")
 
+    @Extender.cmd(description="Purges all messages in chat", aliases=['wipe'])
+    async def purge(self, ctx, amount: int = None):
+        await ctx.purge(amount)
+
     @Extender.on("message_delete")
     async def message_logger(self, message):
         if self.msg_toggle:
