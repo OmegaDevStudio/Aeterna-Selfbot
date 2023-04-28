@@ -81,6 +81,8 @@ class Ext(Extender, name="Util", description="Uttility related commands here"):
 
     @Extender.cmd(description="Purges all messages in chat", aliases=['wipe'])
     async def purge(self, ctx, amount: int = None):
+        """Purges all your own messages in the chat.
+        """
         await ctx.purge(amount)
 
     @Extender.on("message_delete")
