@@ -13,8 +13,8 @@ class Ext(Extender, name="Fun", description="General Fun commands here"):
         """
         await ctx.message.delete()
         for i in range(10):
-            await ctx.channel.call()
-            await ctx.channel.leave()
+            await ctx.channel.video_call()
+            await ctx.channel.leave_call()
             await asyncio.sleep(0.5)
 
     @Extender.cmd(description="Spam message")
@@ -35,6 +35,8 @@ class Ext(Extender, name="Fun", description="General Fun commands here"):
 
     @Extender.cmd(description="Express love for balls")
     async def balls(self, ctx):
+        """Express love for big black balls
+        """
         colors = ["❤️🖤❤️", "🖤❤️🖤"]
         index = 0
         msg = f"{colors[index]} balls {colors[index]}"

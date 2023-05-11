@@ -42,8 +42,8 @@ class Ext(Extender, name="User", description="User related commands here"):
         await ctx.reply("Successfully sent friend request")
 
     @Extender.cmd(description="Gathers information regarding a user", aliases=['userinfo'])
-    async def whois(self, ctx, user: int):
-        """Attempts to gather information regarding a user. Can gather profile data, basic user data such as date of creation.
+    async def whois(self, ctx, user: str):
+        """Attempts to gather information regarding a user. Can gather profile data, basic user data such as date of creation and mutual friends.
         """
         user = await self.bot.get_user(user)
         msg = f"```ini\n[ {user} ]\n\n"
@@ -57,15 +57,31 @@ class Ext(Extender, name="User", description="User related commands here"):
             msg += f"[ Premium ] : {profile.premium_type}\n"
             msg += f"[ Mutual Guilds ] : {[guild.name for guild in profile.mutual_guilds]}\n"
 
-            msg += f"[ Connected Accounts ] : "
+            msg += f"[ Connected Accounts ] : \n"
             for account in profile.connected_accounts:
                 msg += f"{account.name} : {account.type}\n"
             msg += f"[ Bio ] :\n{profile.bio}\n"
+        msg += f"[ Mutual Friends ] : \n"
+        for friend in (await user.get_mutual_friends()):
+            msg += f"{friend}\n"
         msg += "```"
         msg += f"**BANNER:**{user.banner_url}\n**AVATAR:**{user.avatar_url}"
 
         await ctx.reply(msg)
 
+    @Extender.cmd(description="Shows avatar of person", aliases=['av'])
+    async def avatar(self, ctx, user: str):
+        """Displays avatar of user
+        """
+        user = await self.bot.get_user(user)
+        await ctx.reply(f"{user.avatar_url}")
+
+    @Extender.cmd(description="Shows banner of person")
+    async def banner(self, ctx, user: str):
+        """Displays banner of user
+        """
+        user = await self.bot.get_user(user)
+        await ctx.reply(f"{user.banner_url}")
 
 
 

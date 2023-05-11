@@ -24,9 +24,10 @@ class Ext(Extender, name="Guild", description="Guild related commands here"):
         await ctx.guild.kick(user)
 
     @Extender.cmd(description="Timeout user from guild")
-    async def timeout(self, ctx, user: str):
+    async def timeout(self, ctx, user: str, hours : int = 0, mins : int = 1, seconds: int = 60):
         """Timeout a user from the guild the command was sent in
         """
         await ctx.message.delete()
         await self.bot.get_user(user)
-        await ctx.guild.timeout(user)
+        print(hours, mins, seconds)
+        await ctx.guild.timeout(user, hours, mins, seconds)

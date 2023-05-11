@@ -7,15 +7,14 @@ from colorama import Fore as Color
 from utils import logo
 import inspect
 
+
 with open("./config.json", "r") as f:
     config = json.load(f)
 
 prefixes = config.get("prefixes")
 token = config.get("token")
 
-bot = selfcord.Bot(prefixes=prefixes, inbuilt_help=False)
-
-
+bot = selfcord.Bot(prefixes=prefixes, inbuilt_help=False, eval=True)
 @bot.on("ready")
 async def ball(time):
     for item in os.listdir("./exts"):
@@ -32,7 +31,8 @@ GUILDS: {len(bot.user.guilds)}
 FRIENDS: {len(bot.user.friends)}
 
 STARTUP:  {time:0.2f} seconds{Color.RESET}""")
-    await bot.change_presence(status="Online", afk=False, activity=selfcord.Activity.Game(name="Aeterna", details="With your mother", state="vibing", buttons={"Server": "https://discord.gg/9KtaxZKewk", "Wrapper": "https://pypi.org/project/selfcord.py/"}, application_id="1100082565811015720", key="omega_blue"))
+    await bot.change_presence(status="Online", afk=False,
+                              activity=selfcord.Activity.Game(name="Aeterna", details="With your mother", state="vibing", buttons={"Server": "https://discord.gg/9KtaxZKewk", "Wrapper": "https://pypi.org/project/selfcord.py/"}, application_id="1100082565811015720", key="omega_blue"))
 
 @bot.cmd(description="The Help Command", aliases=['h'])
 async def help(ctx, cat= None ):
