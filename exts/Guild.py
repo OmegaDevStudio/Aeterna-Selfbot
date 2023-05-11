@@ -29,5 +29,4 @@ class Ext(Extender, name="Guild", description="Guild related commands here"):
         """
         await ctx.message.delete()
         await self.bot.get_user(user)
-        print(hours, mins, seconds)
         await ctx.guild.timeout(user, hours, mins, seconds)
