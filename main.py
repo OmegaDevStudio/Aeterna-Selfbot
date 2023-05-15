@@ -22,7 +22,7 @@ async def ball(time):
             await bot.load_extension(f"exts.{item[:-3]}")
             await aprint(f"{Color.LIGHTGREEN_EX}Loaded {item[:-3]} extension.{Color.RESET}")
     await asyncio.sleep(0.5)
-    # os.system("cls" if os.name=="nt" else "clear")
+    os.system("cls" if os.name=="nt" else "clear")
     await logo()
     await aprint(f"""{Color.BLUE}
 CONNECTED TO:
