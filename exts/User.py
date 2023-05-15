@@ -1,9 +1,11 @@
 from selfcord import Extender
 from aioconsole import aprint
+import selfcord
 
 class Ext(Extender, name="User", description="User related commands here"):
-    def __init__(self, bot) -> None:
+    def __init__(self, bot: selfcord.Bot) -> None:
         self.bot = bot
+        self.presence_toggle = False
 
     @Extender.cmd(description="Steals a users PFP", aliases=['getpfp'])
     async def stealpfp(self, ctx, id: str):
@@ -83,5 +85,31 @@ class Ext(Extender, name="User", description="User related commands here"):
         user = await self.bot.get_user(user)
         await ctx.reply(f"{user.banner_url}")
 
+    @Extender.cmd(description="Toggles the presence/status logger", aliases=["presencelog", "preslogger", "presencelogger", "clientlog", "clientlogger"])
+    async def plog(self, ctx, toggle):
+        if toggle.lower() == "on" or toggle.lower() == "true":
+            self.presence_toggle = True
+            await ctx.reply(f"```ini\n[ Presence Logger is ON ]```")
+        elif toggle.lower() == "off" or toggle.lower() == "false":
+            self.presence_toggle = False
+            await ctx.reply(f"```ini\n[ Presence Logger is OFF ]```")
 
+    @Extender.on("presence_update")
+    async def presence_logger(self, user, status, last_modified, client_status, activity):
+        if self.presence_toggle:
+            if not hasattr(user, "name"):
+                user = await self.bot.get_user(user)
+            msg = f"""
+USER: {user}
+STATUS: {status}\n"""
+            if last_modified != None:
+                msg += f"LAST MODIFIED: {last_modified}\n"
+            if client_status != None:
+                msg += "CLIENT:\n"
+                for key, value in client_status.items():
+                    msg += f"{key} : {value}\n"
+            if activity != None:
+                msg += f"ACTIVITY:\n{activity}"
+
+        await aprint(msg)
 

@@ -2,10 +2,10 @@ from selfcord import Extender
 from aioconsole import aprint
 from aiohttp import ClientSession
 import re
-
+import selfcord
 
 class Ext(Extender, name="Util", description="Uttility related commands here"):
-    def __init__(self, bot) -> None:
+    def __init__(self, bot: selfcord.Bot) -> None:
         self.bot = bot
         self.nitro_toggle = False
         self.msg_toggle = False

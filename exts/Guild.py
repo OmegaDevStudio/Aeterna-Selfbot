@@ -1,10 +1,11 @@
 from selfcord import Extender
+import selfcord
 from aioconsole import aprint
 import asyncio
 import random
 
 class Ext(Extender, name="Guild", description="Guild related commands here"):
-    def __init__(self, bot) -> None:
+    def __init__(self, bot: selfcord.Bot) -> None:
         self.bot = bot
 
     @Extender.cmd(description="Ban user from guild")
