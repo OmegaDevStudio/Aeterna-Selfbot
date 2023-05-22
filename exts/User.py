@@ -1,5 +1,4 @@
-from datetime import date, datetime
-from time import time
+from datetime import datetime
 
 import selfcord
 from aioconsole import aprint
@@ -59,7 +58,7 @@ class Ext(Extender, name="User", description="User related commands here"):
             msg += f"[ Premium ] : {profile.premium_type}\n"
             msg += f"[ Mutual Guilds ] : \n"
             for guild in profile.mutual_guilds:
-                msg += f"{guild.name}"
+                msg += f"{guild.name}\n"
 
             msg += f"[ Connected Accounts ] : \n"
             for account in profile.connected_accounts:
@@ -95,13 +94,13 @@ class Ext(Extender, name="User", description="User related commands here"):
             "clientlogger",
         ],
     )
-    async def plog(self, ctx: Context, toggle: bool):
+    async def plog(self, ctx: Context, toggle: str):
         if toggle.lower() == "on" or toggle.lower() == "true":
             self.presence_toggle = True
-            await ctx.reply(f"```ini\n[ Presence Logger is ON ]```")
+            await ctx.reply("```ini\n[ Presence Logger is ON ]```")
         elif toggle.lower() == "off" or toggle.lower() == "false":
             self.presence_toggle = False
-            await ctx.reply(f"```ini\n[ Presence Logger is OFF ]```")
+            await ctx.reply("```ini\n[ Presence Logger is OFF ]```")
 
     @Extender.on("presence_update")
     async def presence_logger(

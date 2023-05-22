@@ -2,7 +2,7 @@ import asyncio
 import random
 
 from aioconsole import aprint
-from selfcord import Bot, Context, Extender, Message, User, Voiceable
+from selfcord import Bot, Context, Extender, User, Voiceable
 
 
 class Ext(Extender, name="Fun", description="General Fun commands here"):
@@ -57,7 +57,7 @@ class Ext(Extender, name="Fun", description="General Fun commands here"):
             await message.edit(msg)
 
     @Extender.cmd(description="Copies a users messages", aliases=["copy"])
-    async def copycat(self, ctx: Context, user: str | None = None):
+    async def copycat(self, ctx: Context, user: str = None):
         """Copies a users messages, omit user parameter to turn off"""
         if user is not None:
             user: User = await self.bot.get_user(user)
@@ -67,8 +67,17 @@ class Ext(Extender, name="Fun", description="General Fun commands here"):
             await ctx.reply(f"Stopped copying {self.copy.name}")
             self.copy = None
 
+    @Extender.cmd(description="Esex command", aliases=["esex"])
+    async def sex(self, ctx: Context):
+        """Does the esex. Change pasta.txt for whatever copypasta, separate by lines"""
+        with open("./pasta.txt", encoding="utf-8") as f:
+            file = f.read().splitlines()
+        for sent in file:
+            await ctx.edit(content=sent)
+            await asyncio.sleep(2)
+
     @Extender.on("message")
-    async def copy_msg(self, message: Message):
+    async def copy_msg(self, message):
         if self.copy is not None:
             if message.author.id == self.copy.id:
                 channel = message.channel

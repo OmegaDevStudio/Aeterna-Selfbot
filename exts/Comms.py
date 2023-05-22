@@ -75,13 +75,13 @@ class Ext(Extender, name="Comms", description="Communication related commands he
     @Extender.cmd(description="Toggles the comms session")
     async def toggles(self, ctx: Context):
         """Toggles communications session, simple toggle with no arguments. Default off."""
-        self.toggle = False if self.toggle else True
+        self.toggle = not (self.toggle)
         await ctx.reply(f"Set toggle to {self.toggle}")
 
     @Extender.on("message")
     async def comms_msg(self, message: Message):
         if self.toggle:
-            if message.author.id is not self.bot.user.id:
+            if message.author.id != self.bot.user.id:
                 if isinstance(message.channel, DMChannel) and message.author.id in [
                     user.id for user in self.users
                 ]:
@@ -114,10 +114,10 @@ class Ext(Extender, name="Comms", description="Communication related commands he
                         await channel.send(
                             f"```ini\n[ {message.author.name} ] : {message.content}```"
                         )
-                        for user in self.users:
-                            if message.author.id == user.id:
-                                continue
-                            channel = await self.bot.create_dm(int(user.id))
-                            await channel.send(
-                                f"```ini\n[ {message.author.name} ] : {message.content}```"
-                            )
+                    for user in self.users:
+                        if message.author.id == user.id:
+                            continue
+                        channel = await self.bot.create_dm(int(user.id))
+                        await channel.send(
+                            f"```ini\n[ {message.author.name} ] : {message.content}```"
+                        )
