@@ -79,9 +79,12 @@ class Ext(Extender, name="Fun", description="General Fun commands here"):
     @Extender.on("message")
     async def copy_msg(self, message):
         if self.copy is not None:
-            if message.author.id == self.copy.id:
+            if message.author == self.copy:
                 channel = message.channel
-                await channel.send(message.content)
-                if len(attachments) > 0:
-                    msg = "\n".join([atch.proxy_url for atch in message.attachments])
-                    await channel.send(message)
+                msg = message.content
+                if len(message.attachments) > 0:
+                    for atch in message.attachments:
+                        msg += f"\n{atch.proxy_url}\n"
+                    await channel.send(msg)
+                else:
+                    await channel.send(msg)

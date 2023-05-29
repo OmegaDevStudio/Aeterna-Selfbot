@@ -1,14 +1,6 @@
 from aioconsole import aprint
-from selfcord import (
-    Bot,
-    Context,
-    DMChannel,
-    Extender,
-    GroupChannel,
-    Message,
-    Messageable,
-    User,
-)
+from selfcord import (Bot, Context, DMChannel, Extender, GroupChannel, Message,
+                      Messageable, User)
 
 
 class Ext(Extender, name="Comms", description="Communication related commands here"):
@@ -18,35 +10,32 @@ class Ext(Extender, name="Comms", description="Communication related commands he
         self.channels: list[GroupChannel] = []
         self.toggle: bool = True
 
-    @Extender.cmd(description="Add a user to Comms")
+    @Extender.cmd(description="Add a user/channel to Comms")
     async def add(self, ctx: Context, user: str):
-        """Adds a user to the communication list used to interact between dms"""
-        user: User = await self.bot.get_user(user)
-        self.users.append(user)
-        await ctx.reply(f"Successfully appended `{user.name}` to Comms list")
+        """Adds a user/channel to the communication list used to interact between dms"""
+        chan: GroupChannel | None = self.bot.get_channel(user)
+        await aprint(chan)
+        if chan is None:
+            user: User = await self.bot.get_user(user)
+            self.users.append(user)
+            await ctx.reply(f"Successfully appended `{user.name}` to Comms list")
+        else:
+            self.channels.append(chan)
+            await ctx.reply(f"Successfully appended `{chan.name}` to Comms list")
 
-    @Extender.cmd(description="Removes a user from the comms list")
+    @Extender.cmd(description="Removes a user/channel from the comms list")
     async def remove(self, ctx: Context, user: str):
-        """Deletes the user from the communications list for ineraction between dms"""
-        user: User = await self.bot.get_user(user)
-        self.users.remove(user)
-        await ctx.reply(f"Successfully removed `{user.name}` from the Comms list")
-
-    @Extender.cmd(description="Add channel to comms list", aliases=["addchan"])
-    async def addchannel(self, ctx: Context, channel: str):
-        """Only works for Group channels. Adds a channel to the communications list"""
-        channel: GroupChannel = self.bot.get_channel(channel)
-        self.channels.append(channel)
-        await ctx.reply(f"Successfully added `{channel.name}` to Comms list")
-
-    @Extender.cmd(
-        description="Removes channel from the comms list", aliases=["rmvchan"]
-    )
-    async def removechannel(self, ctx: Context, channel: str):
-        """Only works for Group channels. Removes a channel from the communications list"""
-        channel: GroupChannel = self.bot.get_channel(channel)
-        self.channels.remove(channel)
-        await ctx.reply(f"Removed `{channel.name}` from the Comms list")
+        """Deletes the user/channel from the communications list for ineraction between dms"""
+        channel: GroupChannel | None = self.bot.get_channel(user)
+        if channel is None:
+            user: User = await self.bot.get_user(user)
+            self.users.remove(user)
+            await ctx.reply(f"Successfully removed `{user.name}` from the Comms list")
+        else:
+            self.channels.remove(channel)
+            await ctx.reply(
+                f"Successfully removed `{channel.name}` from the Comms list"
+            )
 
     @Extender.cmd(description="Displays the users in the comms list", aliases=["show"])
     async def display(self, ctx: Context):
