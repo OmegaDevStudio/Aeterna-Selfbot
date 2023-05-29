@@ -2,7 +2,7 @@
 A selfbot made purely with [selfcord.py](https://github.com/Shell1010/Selfcord) a wrapper designed for selfbots. This was made for demonstration purposes, as a base example for your own projects.
 
 ## Requirements
-Requires the selfcord.py library
+Test Requires the selfcord.py library
 ```
 pip install selfcord.py
 ```
