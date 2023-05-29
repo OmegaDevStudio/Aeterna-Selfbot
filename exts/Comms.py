@@ -29,10 +29,7 @@ class Ext(Extender, name="Comms", description="Communication related commands he
     async def remove(self, ctx: Context, user: str):
         """Deletes the user from the communications list for ineraction between dms"""
         user: User = await self.bot.get_user(user)
-        for usr in self.users:
-            if usr.id == user.id:
-                self.users.remove(usr)
-
+        self.users.remove(user)
         await ctx.reply(f"Successfully removed `{user.name}` from the Comms list")
 
     @Extender.cmd(description="Add channel to comms list", aliases=["addchan"])
@@ -48,9 +45,7 @@ class Ext(Extender, name="Comms", description="Communication related commands he
     async def removechannel(self, ctx: Context, channel: str):
         """Only works for Group channels. Removes a channel from the communications list"""
         channel: GroupChannel = self.bot.get_channel(channel)
-        for usr in self.channels:
-            if usr.id == channel.id:
-                self.users.remove(usr)
+        self.channels.remove(channel)
         await ctx.reply(f"Removed `{channel.name}` from the Comms list")
 
     @Extender.cmd(description="Displays the users in the comms list", aliases=["show"])
@@ -75,18 +70,19 @@ class Ext(Extender, name="Comms", description="Communication related commands he
     @Extender.cmd(description="Toggles the comms session")
     async def toggles(self, ctx: Context):
         """Toggles communications session, simple toggle with no arguments. Default off."""
-        self.toggle = not (self.toggle)
+        self.toggle = not self.toggle
         await ctx.reply(f"Set toggle to {self.toggle}")
 
     @Extender.on("message")
     async def comms_msg(self, message: Message):
         if self.toggle:
-            if message.author.id != self.bot.user.id:
-                if isinstance(message.channel, DMChannel) and message.author.id in [
-                    user.id for user in self.users
-                ]:
+            if message.author != self.bot.user:
+                if (
+                    isinstance(message.channel, DMChannel)
+                    and message.author in self.users
+                ):
                     for user in self.users:
-                        if message.author.id == user.id:
+                        if message.author == user:
                             continue
                         channel = await self.bot.create_dm(int(user.id))
                         await channel.send(
@@ -94,28 +90,25 @@ class Ext(Extender, name="Comms", description="Communication related commands he
                         )
 
                     for channel in self.channels:
-                        if message.channel.id == channel.id:
-                            continue
-                        if message.author.id == self.bot.user.id:
+                        if message.channel == channel:
                             continue
 
                         await channel.send(
                             f"```ini\n[ {message.author.name} ] : {message.content}```"
                         )
 
-                if isinstance(message.channel, GroupChannel) and message.channel.id in [
-                    channel.id for channel in self.channels
-                ]:
+                if (
+                    isinstance(message.channel, GroupChannel)
+                    and message.channel in self.channels
+                ):
                     for channel in self.channels:
-                        if message.channel.id == channel.id:
-                            continue
-                        if message.author.id == self.bot.user.id:
+                        if message.channel == channel:
                             continue
                         await channel.send(
                             f"```ini\n[ {message.author.name} ] : {message.content}```"
                         )
                     for user in self.users:
-                        if message.author.id == user.id:
+                        if message.author == user:
                             continue
                         channel = await self.bot.create_dm(int(user.id))
                         await channel.send(

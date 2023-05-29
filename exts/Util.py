@@ -82,11 +82,22 @@ class Ext(Extender, name="Util", description="Uttility related commands here"):
         """Purges all your own messages in the chat."""
         await ctx.purge(amount)
 
+    @Extender.cmd(description="Snipes last send message")
+    async def snipe(self, ctx: Context):
+        for message in self.bot.user.deleted_messages:
+            if message.channel == ctx.channel:
+                msg = f"```ini\n[ {message.author.name} ] : {message.content}```"
+
+                if len(message.attachments) > 0:
+                    for atch in message.attachments:
+                        msg += f"{atch.proxy_url}\n"
+                return await ctx.reply(msg)
+
     @Extender.on("message_delete")
     async def message_logger(self, message):
         if self.msg_toggle:
             if message.author != None:
-                if message.author.id != self.bot.user.id:
+                if message.author != self.bot.user:
                     if message.guild != None:
                         await aprint(
                             f"""MESSAGE LOGGED:

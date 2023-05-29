@@ -82,3 +82,6 @@ class Ext(Extender, name="Fun", description="General Fun commands here"):
             if message.author.id == self.copy.id:
                 channel = message.channel
                 await channel.send(message.content)
+                if len(attachments) > 0:
+                    msg = "\n".join([atch.proxy_url for atch in message.attachments])
+                    await channel.send(message)
