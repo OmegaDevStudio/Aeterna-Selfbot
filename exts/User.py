@@ -54,17 +54,17 @@ class Ext(Extender, name="User", description="User related commands here"):
         msg += f"[ Created at ] : {user.created_at}\n"
 
         profile: Profile = await user.get_profile()
-        if profile != None:
+        if profile is not None:
             msg += f"[ Premium ] : {profile.premium_type}\n"
-            msg += f"[ Mutual Guilds ] : \n"
+            msg += "[ Mutual Guilds ] : \n"
             for guild in profile.mutual_guilds:
                 msg += f"{guild.name}\n"
 
-            msg += f"[ Connected Accounts ] : \n"
+            msg += "[ Connected Accounts ] : \n"
             for account in profile.connected_accounts:
                 msg += f"{account.name} : {account.type}\n"
             msg += f"[ Bio ] :\n{profile.bio}\n"
-        msg += f"[ Mutual Friends ] : \n"
+        msg += "[ Mutual Friends ] : \n"
         for friend in await user.get_mutual_friends():
             msg += f"{friend}\n"
         msg += "```"

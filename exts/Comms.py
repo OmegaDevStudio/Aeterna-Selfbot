@@ -14,7 +14,6 @@ class Ext(Extender, name="Comms", description="Communication related commands he
     async def add(self, ctx: Context, user: str):
         """Adds a user/channel to the communication list used to interact between dms"""
         chan: GroupChannel | None = self.bot.get_channel(user)
-        await aprint(chan)
         if chan is None:
             user: User = await self.bot.get_user(user)
             self.users.append(user)

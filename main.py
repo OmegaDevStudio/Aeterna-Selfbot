@@ -47,7 +47,7 @@ STARTUP:  {time:0.2f} seconds{Color.RESET}"""
                 "Wrapper": "https://pypi.org/project/selfcord.py/",
             },
             application_id="1100082565811015720",
-            key="omega_blue",
+            key="sheepshead_fish",
         ),
     )
 

@@ -1,3 +1,4 @@
+import datetime
 import re
 
 import selfcord
@@ -84,9 +85,9 @@ class Ext(Extender, name="Util", description="Uttility related commands here"):
 
     @Extender.cmd(description="Snipes last send message")
     async def snipe(self, ctx: Context):
-        for message in self.bot.user.deleted_messages:
+        for message in reversed(self.bot.user.deleted_messages):
             if message.channel == ctx.channel:
-                msg = f"```ini\n[ {message.author.name} ] : {message.content}```"
+                msg = f"```ini\n[ {datetime.datetime.fromtimestamp(message.deleted_time).strftime('%H:%M:%S')} ] [ {message.author.name} ] : {message.content}```"
 
                 if len(message.attachments) > 0:
                     for atch in message.attachments:
