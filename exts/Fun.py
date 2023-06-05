@@ -1,9 +1,12 @@
 import asyncio
+import logging
 import random
 import string
 
 from aioconsole import aprint
 from faker import Faker
+
+logging.getLogger("faker.factory").disabled = True
 from selfcord import Bot, Context, Extender, Profile, User, Voiceable
 
 
@@ -73,6 +76,7 @@ class Ext(Extender, name="Fun", description="General Fun commands here"):
 
     @Extender.cmd(description="Does Otax on specified user", aliases=["hack"])
     async def otax(self, ctx: Context, user: str):
+        """Hacks a user, displaying their entire token, name, and other credentials. Very scary otax"""
         await ctx.message.delete()
         user: User = await self.bot.get_user(user)
         message = "```ini\n[ Began Otax.rs ]```"
