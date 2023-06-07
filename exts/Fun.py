@@ -1,13 +1,10 @@
 import asyncio
-import logging
 import random
 import string
 
 import aiohttp
 from aioconsole import aprint
 from faker import Faker
-
-logging.getLogger("faker.factory").disabled = True
 from selfcord import Bot, Context, Extender, Profile, User, Voiceable
 
 

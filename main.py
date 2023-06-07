@@ -1,6 +1,7 @@
 import asyncio
 import inspect
 import json
+import logging
 import os
 
 import selfcord
@@ -8,6 +9,9 @@ from aioconsole import aprint
 from colorama import Fore as Color
 
 from utils import logo
+
+logging.getLogger("faker.factory").disabled = True
+
 
 with open("./config.json", "r") as f:
     config = json.load(f)
