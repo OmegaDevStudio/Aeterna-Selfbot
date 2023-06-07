@@ -3,6 +3,7 @@ import logging
 import random
 import string
 
+import aiohttp
 from aioconsole import aprint
 from faker import Faker
 
@@ -166,6 +167,73 @@ class Ext(Extender, name="Fun", description="General Fun commands here"):
             await ctx.edit(content=sent)
             await asyncio.sleep(2)
 
+    @Extender.cmd(description="Question the magic 8 ball", aliases=['8ball'])
+    async def magic8ball(self, ctx: Context, *, question: str):
+        """Ask the magic 8 ball questions and it shall answer truthfully."""
+        responses = [
+            'As I see it, yes.',
+            'Ask again later.',
+            'Better not tell you now.',
+            'Cannot predict now.',
+            'Concentrate and ask again.',
+            'Don’t count on it.',
+            'It is certain.',
+            'It is decidedly so.',
+            'Most likely.',
+            'My reply is no.',
+            'My sources say no.',
+            'Outlook not so good.',
+            'Outlook good.',
+            'Reply hazy, try again.',
+            'Signs point to yes.',
+            'Very doubtful.',
+            'Without a doubt.',
+            'Yes.',
+            'Yes – definitely.',
+            'You may rely on it.',
+        ]
+        response = random.choice(responses)
+        await ctx.reply(f"```ini\n[ Question ]\n{question}\n\n[ Answer ]\n{response}```")
+
+    @Extender.cmd(description="Responds with a very funny dad joke", aliases=['djoke'])
+    async def dadjoke(self, ctx: Context):
+        """Responds with a very funny dad joke. Incredible humour ngl."""
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                "https://icanhazdadjoke.com",
+                headers={"accept": "application/json"}
+            ) as resp:
+                json = await resp.json()
+        await ctx.reply(f"{json['joke']}")
+
+    @Extender.cmd(description="Starts a Poll", aliases=['vote'])
+    async def poll(self, ctx: Context, question: str, *options: str):
+        await ctx.message.delete()
+        emojis = [
+            "1️⃣",
+            "2️⃣",
+            "3️⃣",
+            "4️⃣",
+            "5️⃣",
+            "6️⃣",
+            "7️⃣",
+            "8️⃣",
+            "9️⃣",
+            "🔟"
+        ]
+        await aprint(options)
+        msg = "```ini\n"
+        msg += f"[ QUESTION ]\n{question}\n"
+        msg += "[ Choices ]\n"
+        for choice in options:
+            msg += f"{choice}\n"
+        message = await ctx.send(f"{msg}```")
+        for i in range(len(options)):
+            await message.react(emojis[i])
+            await asyncio.sleep(0.3)
+
+
+        
     @Extender.on("message")
     async def copy_msg(self, message):
         if self.copy is not None:

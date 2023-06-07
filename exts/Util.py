@@ -1,10 +1,11 @@
 import datetime
 import re
 
+import aiohttp
 import selfcord
 from aioconsole import aprint
 from aiohttp import ClientSession
-from selfcord import Bot, Context, Extender
+from selfcord import Bot, Context, Extender, Message
 
 
 class Ext(Extender, name="Util", description="Uttility related commands here"):
@@ -13,13 +14,25 @@ class Ext(Extender, name="Util", description="Uttility related commands here"):
         self.nitro_toggle: bool = False
         self.msg_toggle: bool = False
         self.inv_toggle: bool = False
+        self.afk_message: bool | None = None
         self.INVITE_REGEX = re.compile(
             r"(http://|https://|)(discord.gg/|canary.discord.com/invite/|ptb.discord.com/invite/|discordapp.com/invite/|discord.com/invite/)[A-z]{3,20}"
         )
         self.NITRO_REGEX = re.compile(
             r"(http://|https://|)(discord.com/gifts/|discordapp.com/gifts/|discord.gift/|canary.discord.com/gifts/|ptb.discord.com/gifts)([a-zA-Z0-9]{5,18})"
         )
-
+    @Extender.cmd(
+        description="Gather information regarding an IP address, IPv4 only", aliases=['ipdox', 'geoip']
+    )
+    async def ipinfo(self, ctx: Context, ip: str):
+        await ctx.message.delete()
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"http://ip-api.com/json/{ip}") as resp:
+                json = await resp.json()
+                msg = "```ini\n"
+            for key, value in json.items():
+                msg += f"[ {key} ] : {value}\n"
+            await ctx.send(f"{msg}```")
     @Extender.cmd(
         description="Gathers information regarding token", aliases=["tdox", "tinfo"]
     )
@@ -82,6 +95,11 @@ class Ext(Extender, name="Util", description="Uttility related commands here"):
     async def purge(self, ctx: Context, amount: int = 0):
         """Purges all your own messages in the chat."""
         await ctx.purge(amount)
+
+    @Extender.cmd(description="Sets AFK status for user")
+    async def afk(self, ctx: Context, *, message: str):
+        self.afk_message = message
+        await ctx.reply(f"```ini\n[ USER IS AFK ]\n{message}```")
 
     @Extender.cmd(description="Snipes last send message")
     async def snipe(self, ctx: Context):
@@ -146,3 +164,12 @@ INVITE: {matches}
             if len(matches) > 0:
                 for match in matches:
                     await self.bot.redeem_nitro(match[2])
+
+    @Extender.on("message")
+    async def afk_checker(self, message: Message):
+        if self.afk_message is not None:
+            for user in message.mentions:
+                if user == self.bot.user:
+                    await message.channel.reply(message, f"```ini\n[ USER IS AFK]\n{self.afk_message}```")
+            if (message.author == self.bot.user) and (not self.afk_message in message.content):
+                self.afk_message = None

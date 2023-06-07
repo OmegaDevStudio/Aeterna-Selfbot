@@ -125,5 +125,3 @@ STATUS: {status}\n"""
                     msg += f"{key} : {value}\n"
             if activity != None:
                 msg += f"ACTIVITY:\n{activity}"
-
-        await aprint(msg)
