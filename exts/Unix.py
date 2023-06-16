@@ -39,33 +39,6 @@ class Ext(
                     await ctx.reply(msg)
                     await asyncio.sleep(1.5)
 
-    @Extender.cmd(description="CAT command. Displays the contents of a file")
-    async def cat(self, ctx: Context, *, path: str):
-        """The CAT Command, equivalent to CAT cli tool. Does not require root permissions. Displays contents of a file. Uses a file path."""
-        val = await asyncio.subprocess.create_subprocess_shell(
-            "cat " + path,
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
-        )
-        stdout, stderr = await val.communicate()
-        if stdout:
-            if len(stdout.decode()) < 1800:
-                msg = f"```ini\n[ STDOUT ]\n{stdout.decode()}```"
-                await ctx.reply(msg)
-            else:
-                for i in range(0, len(stdout.decode()), 1800):
-                    msg = f"```ini\n[ STDOUT ]\n{stdout.decode()[i:i+1800]}```"
-                    await ctx.reply(msg)
-                    await asyncio.sleep(1.5)
-
-        if stderr:
-            if len(stderr.decode()) < 1800:
-                msg = f"[ STDERR ]\n{stderr.decode()}"
-            else:
-                for i in range(0, len(stderr.decode()), 1800):
-                    msg = f"```ini\n[ STDERR ]\n{stderr.decode()[i:i+1800]}"
-                    await ctx.reply(msg)
-                    await asyncio.sleep(1.5)
 
     @Extender.cmd(
         description="Nslookup command. Gathers information on a domain/ip address"
@@ -102,6 +75,34 @@ class Ext(
         """The curl command. equivalent to the curl cli tool. Does not require root permissions. Gathers data from api endpoints or domains, can be used to test these api links."""
         val = await asyncio.subprocess.create_subprocess_shell(
             "curl " + msg,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+        stdout, stderr = await val.communicate()
+        if stdout:
+            if len(stdout.decode()) < 1800:
+                msg = f"```ini\n[ STDOUT ]\n{stdout.decode()}```"
+                await ctx.reply(msg)
+            else:
+                for i in range(0, len(stdout.decode()), 1800):
+                    msg = f"```ini\n[ STDOUT ]\n{stdout.decode()[i:i+1800]}```"
+                    await ctx.reply(msg)
+                    await asyncio.sleep(1.5)
+
+        if stderr:
+            if len(stderr.decode()) < 1800:
+                msg = f"[ STDERR ]\n{stderr.decode()}"
+            else:
+                for i in range(0, len(stderr.decode()), 1800):
+                    msg = f"```ini\n[ STDERR ]\n{stderr.decode()[i:i+1800]}"
+                    await ctx.reply(msg)
+                    await asyncio.sleep(1.5)
+
+    @Extender.cmd(description="Ping command. Pings an address to see if is online")
+    async def ping(self, ctx: Context, addr: str):
+        """The ping command, equivalent to the ping cli tool. Does not require root permissions. Attempts to check whether the host is online"""
+        val = await asyncio.subprocess.create_subprocess_shell(
+            f"ping -c 3 {addr}",
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
         )

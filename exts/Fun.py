@@ -203,32 +203,32 @@ class Ext(Extender, name="Fun", description="General Fun commands here"):
                 json = await resp.json()
         await ctx.reply(f"{json['joke']}")
 
-    @Extender.cmd(description="Starts a Poll", aliases=['vote'])
-    async def poll(self, ctx: Context, question: str, *options: str):
-        await ctx.message.delete()
-        emojis = [
-            "1️⃣",
-            "2️⃣",
-            "3️⃣",
-            "4️⃣",
-            "5️⃣",
-            "6️⃣",
-            "7️⃣",
-            "8️⃣",
-            "9️⃣",
-            "🔟"
-        ]
-        await aprint(options)
-        msg = "```ini\n"
-        msg += f"[ QUESTION ]\n{question}\n"
-        msg += "[ Choices ]\n"
-        for choice in options:
-            msg += f"{choice}\n"
-        message = await ctx.send(f"{msg}```")
-        for i in range(len(options)):
-            await message.react(emojis[i])
-            await asyncio.sleep(0.3)
+    @Extender.cmd(description="Calculates length of penis for a user", aliases=['dick', 'shlong', 'pp'])
+    async def penis(self, ctx: Context, user: str):
+        user = await self.bot.get_user(user)
+        await ctx.reply(f"```ini\n[ {user.name} penis ]\n\n8{'=' * random.randint(1,10)}D```")
 
+    @Extender.cmd(description="Sends cool cat pics", aliases=['gato'])
+    async def cat(self, ctx: Context):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                "https://api.thecatapi.com/v1/images/search"
+            ) as resp:
+                json = await resp.json()
+        await ctx.reply(f"{json[0]['url']}")
+
+
+
+    @Extender.cmd(description="Sends cool dog pic", aliases=['doggo'])
+    async def dog(self, ctx: Context):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                "https://api.thedogapi.com/v1/images/search?limit=10"
+            ) as resp:
+                json = await resp.json()
+        await ctx.reply(f"{json[0]['url']}")
+
+    
 
         
     @Extender.on("message")

@@ -52,13 +52,14 @@ class Ext(Extender, name="User", description="User related commands here"):
         tok = user.b64token.replace("==", "")
         msg += f"[ B64Token ] : {tok}\n"
         msg += f"[ Created at ] : {user.created_at}\n"
-
+        msg += f"[ Public Flags ] : {user.public_flags}\n"
+        msg += f"[ Raw Public Flags ] : {user.raw_public_flags}\n"
         profile: Profile = await user.get_profile()
         if profile is not None:
             msg += f"[ Premium ] : {profile.premium_type}\n"
             msg += "[ Mutual Guilds ] : \n"
             for guild in profile.mutual_guilds:
-                msg += f"{guild.name}\n"
+                msg += f"{guild.name}\n" if guild is not None else "None"
 
             msg += "[ Connected Accounts ] : \n"
             for account in profile.connected_accounts:
