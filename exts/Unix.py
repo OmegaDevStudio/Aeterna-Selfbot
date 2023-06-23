@@ -23,11 +23,11 @@ class Ext(
         if stdout:
             if len(stdout.decode()) < 1800:
                 msg = f"```ini\n[ STDOUT ]\n{stdout.decode()}```"
-                await ctx.reply(msg)
+                await ctx.reply(msg, delete_after=60)
             else:
                 for i in range(0, len(stdout.decode()), 1800):
                     msg = f"```ini\n[ STDOUT ]\n{stdout.decode()[i:i+1800]}```"
-                    await ctx.reply(msg)
+                    await ctx.reply(msg, delete_after=60)
                     await asyncio.sleep(1.5)
 
         if stderr:
@@ -36,7 +36,7 @@ class Ext(
             else:
                 for i in range(0, len(stderr.decode()), 1800):
                     msg = f"```ini\n[ STDERR ]\n{stderr.decode()[i:i+1800]}"
-                    await ctx.reply(msg)
+                    await ctx.reply(msg, delete_after=60)
                     await asyncio.sleep(1.5)
 
 
@@ -54,11 +54,11 @@ class Ext(
         if stdout:
             if len(stdout.decode()) < 1800:
                 msg = f"```ini\n[ STDOUT ]\n{stdout.decode()}```"
-                await ctx.reply(msg)
+                await ctx.reply(msg, delete_after=60)
             else:
                 for i in range(0, len(stdout.decode()), 1800):
                     msg = f"```ini\n[ STDOUT ]\n{stdout.decode()[i:i+1800]}```"
-                    await ctx.reply(msg)
+                    await ctx.reply(msg, delete_after=60)
                     await asyncio.sleep(1.5)
 
         if stderr:
@@ -67,7 +67,7 @@ class Ext(
             else:
                 for i in range(0, len(stderr.decode()), 1800):
                     msg = f"```ini\n[ STDERR ]\n{stderr.decode()[i:i+1800]}"
-                    await ctx.reply(msg)
+                    await ctx.reply(msg, delete_after=60)
                     await asyncio.sleep(1.5)
 
     @Extender.cmd(description="Curl command. Gather data from apis/domains.")
@@ -82,11 +82,11 @@ class Ext(
         if stdout:
             if len(stdout.decode()) < 1800:
                 msg = f"```ini\n[ STDOUT ]\n{stdout.decode()}```"
-                await ctx.reply(msg)
+                await ctx.reply(msg, delete_after=60)
             else:
                 for i in range(0, len(stdout.decode()), 1800):
                     msg = f"```ini\n[ STDOUT ]\n{stdout.decode()[i:i+1800]}```"
-                    await ctx.reply(msg)
+                    await ctx.reply(msg, delete_after=60)
                     await asyncio.sleep(1.5)
 
         if stderr:
@@ -95,7 +95,7 @@ class Ext(
             else:
                 for i in range(0, len(stderr.decode()), 1800):
                     msg = f"```ini\n[ STDERR ]\n{stderr.decode()[i:i+1800]}"
-                    await ctx.reply(msg)
+                    await ctx.reply(msg, delete_after=60)
                     await asyncio.sleep(1.5)
 
     @Extender.cmd(description="Ping command. Pings an address to see if is online")
@@ -110,11 +110,11 @@ class Ext(
         if stdout:
             if len(stdout.decode()) < 1800:
                 msg = f"```ini\n[ STDOUT ]\n{stdout.decode()}```"
-                await ctx.reply(msg)
+                await ctx.reply(msg, delete_after=60)
             else:
                 for i in range(0, len(stdout.decode()), 1800):
                     msg = f"```ini\n[ STDOUT ]\n{stdout.decode()[i:i+1800]}```"
-                    await ctx.reply(msg)
+                    await ctx.reply(msg, delete_after=60)
                     await asyncio.sleep(1.5)
 
         if stderr:
@@ -123,5 +123,5 @@ class Ext(
             else:
                 for i in range(0, len(stderr.decode()), 1800):
                     msg = f"```ini\n[ STDERR ]\n{stderr.decode()[i:i+1800]}"
-                    await ctx.reply(msg)
+                    await ctx.reply(msg, delete_after=60)
                     await asyncio.sleep(1.5)

@@ -16,7 +16,7 @@ class Ext(Extender, name="Guild", description="Guild related commands here"):
         await ctx.message.delete()
         usr = await self.bot.get_user(user)
         await ctx.guild.ban(user)
-        await ctx.reply(f"Banned {usr.name}")
+        await ctx.reply(f"Banned {usr.name}", delete_after=60)
 
     @Extender.cmd(description="Kick user from guild")
     async def kick(self, ctx: Context, user: str):
@@ -24,7 +24,7 @@ class Ext(Extender, name="Guild", description="Guild related commands here"):
         await ctx.message.delete()
         usr = await self.bot.get_user(user)
         await ctx.guild.kick(user)
-        await ctx.reply(f"Kicked {usr.name}")
+        await ctx.reply(f"Kicked {usr.name}", delete_after=60)
 
     @Extender.cmd(description="Timeout user from guild")
     async def timeout(
@@ -34,4 +34,4 @@ class Ext(Extender, name="Guild", description="Guild related commands here"):
         await ctx.message.delete()
         usr = await self.bot.get_user(user)
         await ctx.guild.timeout(user, hours, mins, seconds)
-        await ctx.reply(f"Timeout {usr.name}")
+        await ctx.reply(f"Timeout {usr.name}", delete_after=60)

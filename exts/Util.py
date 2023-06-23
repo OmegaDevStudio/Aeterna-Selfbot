@@ -1,5 +1,6 @@
 import datetime
 import re
+from time import time
 
 import aiohttp
 import selfcord
@@ -15,6 +16,7 @@ class Ext(Extender, name="Util", description="Uttility related commands here"):
         self.msg_toggle: bool = False
         self.inv_toggle: bool = False
         self.afk_message: bool | None = None
+        self.timestamp: int = 0
         self.INVITE_REGEX = re.compile(
             r"(http://|https://|)(discord.gg/|canary.discord.com/invite/|ptb.discord.com/invite/|discordapp.com/invite/|discord.com/invite/)[A-z]{3,20}"
         )
@@ -32,7 +34,7 @@ class Ext(Extender, name="Util", description="Uttility related commands here"):
                 msg = "```ini\n"
             for key, value in json.items():
                 msg += f"[ {key} ] : {value}\n"
-            await ctx.send(f"{msg}```")
+            await ctx.send(f"{msg}```", delete_after=60)
     @Extender.cmd(
         description="Gathers information regarding token", aliases=["tdox", "tinfo"]
     )
@@ -51,19 +53,19 @@ class Ext(Extender, name="Util", description="Uttility related commands here"):
             for key, value in data.items():
                 msg += f"[ {key} ] : [ {value} ]\n"
             msg += "```"
-            await ctx.send(msg)
+            await ctx.send(msg, delete_after=60)
         else:
-            await ctx.send("Token is Invalid!")
+            await ctx.send("Token is Invalid!", delete_after=60)
 
     @Extender.cmd(description="Toggles Nitro Sniper", aliases=["nsnipe", "nsniper"])
     async def nitrosniper(self, ctx: Context, toggle: str):
         """Toggles the nitro sniper, the nitro sniper attempts to redeem any nitro gift code immediately as the gateway receives it. Information whether the redeeming of the gift was successful or not is displayed via the console."""
         if toggle.lower() == "on" or toggle.lower() == "true":
             self.nitro_toggle = True
-            await ctx.reply(f"```ini\n[ Nitro Sniper is ON ]```")
+            await ctx.reply(f"```ini\n[ Nitro Sniper is ON ]```", delete_after=60)
         elif toggle.lower() == "off" or toggle.lower() == "false":
             self.nitro_toggle = False
-            await ctx.reply(f"```ini\n[ Nitro Sniper is OFF ]```")
+            await ctx.reply(f"```ini\n[ Nitro Sniper is OFF ]```", delete_after=60)
 
     @Extender.cmd(
         description="Toggles Message Logger",
@@ -73,10 +75,10 @@ class Ext(Extender, name="Util", description="Uttility related commands here"):
         """Toggles the message sniper, attempts to display deleted messages via the console, can only gather the full data of deleted messages after the bot starts running since they are cached, messages prior are not cached and therefore cannot be completely logged."""
         if toggle.lower() == "on" or toggle.lower() == "true":
             self.msg_toggle = True
-            await ctx.reply(f"```ini\n[ Message Logger is ON ]```")
+            await ctx.reply(f"```ini\n[ Message Logger is ON ]```", delete_after=60)
         elif toggle.lower() == "off" or toggle.lower() == "false":
             self.msg_toggle = False
-            await ctx.reply(f"```ini\n[ Message Logger is OFF ]```")
+            await ctx.reply(f"```ini\n[ Message Logger is OFF ]```", delete_after=60)
 
     @Extender.cmd(
         description="Toggles Invite Logger",
@@ -86,20 +88,22 @@ class Ext(Extender, name="Util", description="Uttility related commands here"):
         """Toggles the invite logger, attempts to display any/all invites posted in chat via the console."""
         if toggle.lower() == "on" or toggle.lower() == "true":
             self.inv_toggle = True
-            await ctx.reply(f"```ini\n[ Invite Logger is ON ]```")
+            await ctx.reply(f"```ini\n[ Invite Logger is ON ]```", delete_after=60)
         elif toggle.lower() == "off" or toggle.lower() == "false":
             self.inv_toggle = False
-            await ctx.reply(f"```ini\n[ Invite Logger is OFF ]```")
+            await ctx.reply(f"```ini\n[ Invite Logger is OFF ]```", delete_after=60)
 
     @Extender.cmd(description="Purges all messages in chat", aliases=["wipe"])
-    async def purge(self, ctx: Context, amount: int = 0):
+    async def purge(self, ctx: Context, amount: int = 100):
         """Purges all your own messages in the chat."""
+        await ctx.message.delete()
         await ctx.purge(amount)
 
     @Extender.cmd(description="Sets AFK status for user")
     async def afk(self, ctx: Context, *, message: str):
         self.afk_message = message
-        await ctx.reply(f"```ini\n[ USER IS AFK ]\n{message}```")
+        self.timestamp = int(time())
+        await ctx.send(f"```ini\n[ USER IS AFK ]\n{message}```\n**<t:{self.timestamp}:R>**")
 
     @Extender.cmd(description="Snipes last send message")
     async def snipe(self, ctx: Context):
@@ -110,7 +114,7 @@ class Ext(Extender, name="Util", description="Uttility related commands here"):
                 if len(message.attachments) > 0:
                     for atch in message.attachments:
                         msg += f"{atch.proxy_url}\n"
-                return await ctx.reply(msg)
+                return await ctx.reply(msg, delete_after=60)
 
     @Extender.on("message_delete")
     async def message_logger(self, message):
@@ -170,6 +174,6 @@ INVITE: {matches}
         if self.afk_message is not None:
             for user in message.mentions:
                 if user == self.bot.user:
-                    await message.channel.reply(message, f"```ini\n[ USER IS AFK]\n{self.afk_message}```")
+                    await message.channel.reply(message, f"```ini\n[ USER IS AFK]\n{self.afk_message}```\n**<t:{self.timestamp}:R>**")
             if (message.author == self.bot.user) and (not self.afk_message in message.content):
                 self.afk_message = None

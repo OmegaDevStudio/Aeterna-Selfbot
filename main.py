@@ -10,9 +10,6 @@ from colorama import Fore as Color
 
 from utils import logo
 
-logging.getLogger("faker.factory").disabled = True
-
-
 with open("./config.json", "r") as f:
     config = json.load(f)
 
@@ -55,6 +52,9 @@ STARTUP:  {time:0.2f} seconds{Color.RESET}"""
         ),
     )
 
+@bot.cmd(description="Load other extensions via urls", aliases=['install', 'loadext'])
+async def skid(ctx, url: str):
+    await bot.load_extension(url=url, dir="exts")
 
 @bot.cmd(description="The Help Command", aliases=["h"])
 async def help(ctx, cat=None):
@@ -70,7 +70,7 @@ async def help(ctx, cat=None):
             msg += f"[ {ext.name} ] : [ {ext.description} ]\n"
 
         msg += f"```"
-        return await ctx.reply(f"{msg}")
+        return await ctx.reply(f"{msg}", delete_after=60)
 
     else:
         name = cat.lower()
@@ -84,7 +84,7 @@ async def help(ctx, cat=None):
                         msg += f". {command.name}: {command.description}\n"
 
                 msg += f"```"
-                return await ctx.reply(f"{msg}")
+                return await ctx.reply(f"{msg}", delete_after=60)
         else:
             for cmd in bot.commands:
                 if name == cmd.name.lower():
@@ -103,7 +103,7 @@ async def help(ctx, cat=None):
                     msg += f" ]"
 
                     msg += f"```"
-                    return await ctx.reply(f"{msg}")
+                    return await ctx.reply(f"{msg}", delete_after=60)
             for ext in bot.extensions:
                 for cmd in ext.commands:
                     if name == cmd.name.lower():
@@ -122,7 +122,7 @@ async def help(ctx, cat=None):
                         msg += f" ]"
 
                         msg += f"```"
-                        return await ctx.reply(f"{msg}")
+                        return await ctx.reply(f"{msg}", delete_after=60)
 
 
 bot.run(token)

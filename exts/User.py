@@ -15,13 +15,13 @@ class Ext(Extender, name="User", description="User related commands here"):
         """Steals the pfp of a mentioned user, or specified ID. Abundant usage of this command in quick succession can lead to locking."""
         user: User = await self.bot.get_user(id)
         await self.bot.change_pfp(user.avatar_url)
-        await ctx.reply("Successfully changed PFP")
+        await ctx.reply("Successfully changed PFP", delete_after=60)
 
     @Extender.cmd(description="Sets PFP as specified url")
     async def setpfp(self, ctx: Context, url: str):
         """Sets the pfp to a specified URL. Abundant usage of this command in quick succession can lead to locking."""
         await self.bot.change_pfp(url)
-        await ctx.reply("Successfully changed PFP")
+        await ctx.reply("Successfully changed PFP", delete_after=60)
 
     @Extender.cmd(description="Edit bio")
     async def editbio(self, ctx: Context, *, bio: str):
@@ -39,7 +39,7 @@ class Ext(Extender, name="User", description="User related commands here"):
     async def friend(self, ctx: Context, id: str):
         """Attempts to send a friend requets to a mentioned user, or specified ID."""
         await self.bot.add_friend(id)
-        await ctx.reply("Successfully sent friend request")
+        await ctx.reply("Successfully sent friend request", delete_after=60)
 
     @Extender.cmd(
         description="Gathers information regarding a user", aliases=["userinfo"]
@@ -71,19 +71,19 @@ class Ext(Extender, name="User", description="User related commands here"):
         msg += "```"
         msg += f"**BANNER:**{user.banner_url}\n**AVATAR:**{user.avatar_url}"
 
-        await ctx.reply(msg)
+        await ctx.reply(msg, delete_after=60)
 
     @Extender.cmd(description="Shows avatar of person", aliases=["av"])
     async def avatar(self, ctx: Context, user: str):
         """Displays avatar of user"""
         user = await self.bot.get_user(user)
-        await ctx.reply(f"{user.avatar_url}")
+        await ctx.reply(f"{user.avatar_url}", delete_after=60)
 
     @Extender.cmd(description="Shows banner of person")
     async def banner(self, ctx: Context, user: str):
         """Displays banner of user"""
         user = await self.bot.get_user(user)
-        await ctx.reply(f"{user.banner_url}")
+        await ctx.reply(f"{user.banner_url}", delete_after=60)
 
     @Extender.cmd(
         description="Toggles the presence/status logger",
@@ -98,10 +98,10 @@ class Ext(Extender, name="User", description="User related commands here"):
     async def plog(self, ctx: Context, toggle: str):
         if toggle.lower() == "on" or toggle.lower() == "true":
             self.presence_toggle = True
-            await ctx.reply("```ini\n[ Presence Logger is ON ]```")
+            await ctx.reply("```ini\n[ Presence Logger is ON ]```", delete_after=60)
         elif toggle.lower() == "off" or toggle.lower() == "false":
             self.presence_toggle = False
-            await ctx.reply("```ini\n[ Presence Logger is OFF ]```")
+            await ctx.reply("```ini\n[ Presence Logger is OFF ]```", delete_after=60)
 
     @Extender.on("presence_update")
     async def presence_logger(

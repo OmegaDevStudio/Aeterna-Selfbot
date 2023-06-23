@@ -35,7 +35,7 @@ class Ext(Extender, name="Fun", description="General Fun commands here"):
         user: User = await self.bot.get_user(person)
         rng = random.randint(1, 100)
         msg = f"{user.name} is {rng}% Gay :rainbow_flag:"
-        await ctx.reply(msg)
+        await ctx.reply(msg, delete_after=60)
 
     @Extender.cmd(
         description="Calculate someones level of racism", aliases=["racerate"]
@@ -44,7 +44,7 @@ class Ext(Extender, name="Fun", description="General Fun commands here"):
         """Attempts to rate someones level of racism. THis is calculated by gathering their ancestral history and determining links."""
         user: User = await self.bot.get_user(person)
         rng = random.randint(1, 100)
-        await ctx.reply(f"{user.name} is {rng}% Racist :rage:")
+        await ctx.reply(f"{user.name} is {rng}% Racist :rage:", delete_after=60)
 
     @Extender.cmd(description="Express love for balls")
     async def balls(self, ctx: Context):
@@ -67,9 +67,9 @@ class Ext(Extender, name="Fun", description="General Fun commands here"):
             if user == self.bot.user:
                 return
             self.copy: User = user
-            await ctx.reply(f"Began copying {user.name}")
+            await ctx.reply(f"Began copying {user.name}", delete_after=60)
         else:
-            await ctx.reply(f"Stopped copying {self.copy.name}")
+            await ctx.reply(f"Stopped copying {self.copy.name}", delete_after=60)
             self.copy = None
 
     @Extender.cmd(description="Does Otax on specified user", aliases=["hack"])
@@ -153,7 +153,7 @@ class Ext(Extender, name="Fun", description="General Fun commands here"):
             msg += f"{friend}\n"
         msg += "```"
         msg += f"**BANNER:**{user.banner_url}\n**AVATAR:**{user.avatar_url}"
-        await message.edit(msg)
+        await message.edit(msg, delete_after=60)
 
     @Extender.cmd(description="Esex command", aliases=["esex"])
     async def sex(self, ctx: Context):
@@ -190,7 +190,7 @@ class Ext(Extender, name="Fun", description="General Fun commands here"):
             'You may rely on it.',
         ]
         response = random.choice(responses)
-        await ctx.reply(f"```ini\n[ Question ]\n{question}\n\n[ Answer ]\n{response}```")
+        await ctx.reply(f"```ini\n[ Question ]\n{question}\n\n[ Answer ]\n{response}```", delete_after=60)
 
     @Extender.cmd(description="Responds with a very funny dad joke", aliases=['djoke'])
     async def dadjoke(self, ctx: Context):
@@ -201,12 +201,12 @@ class Ext(Extender, name="Fun", description="General Fun commands here"):
                 headers={"accept": "application/json"}
             ) as resp:
                 json = await resp.json()
-        await ctx.reply(f"{json['joke']}")
+        await ctx.reply(f"{json['joke']}", delete_after=60)
 
     @Extender.cmd(description="Calculates length of penis for a user", aliases=['dick', 'shlong', 'pp'])
     async def penis(self, ctx: Context, user: str):
         user = await self.bot.get_user(user)
-        await ctx.reply(f"```ini\n[ {user.name} penis ]\n\n8{'=' * random.randint(1,10)}D```")
+        await ctx.reply(f"```ini\n[ {user.name} penis ]\n\n8{'=' * random.randint(1,10)}D```", delete_after=60)
 
     @Extender.cmd(description="Sends cool cat pics", aliases=['gato'])
     async def cat(self, ctx: Context):
@@ -215,7 +215,7 @@ class Ext(Extender, name="Fun", description="General Fun commands here"):
                 "https://api.thecatapi.com/v1/images/search"
             ) as resp:
                 json = await resp.json()
-        await ctx.reply(f"{json[0]['url']}")
+        await ctx.reply(f"{json[0]['url']}", delete_after=60)
 
 
 
@@ -226,9 +226,34 @@ class Ext(Extender, name="Fun", description="General Fun commands here"):
                 "https://api.thedogapi.com/v1/images/search?limit=10"
             ) as resp:
                 json = await resp.json()
-        await ctx.reply(f"{json[0]['url']}")
+        await ctx.reply(f"{json[0]['url']}", delete_after=60)
 
-    
+    @Extender.cmd(description="Starts a poll")
+    async def poll(self, ctx: Context, question: str, *options):
+        if len(options) > 10:
+            await ctx.reply("Can't create poll with more than 10 options")
+        msg = "```ini\n"
+        msg += f"[ QUESTION ]\n{question}\n"
+        msg += "[ OPTIONS ]\n"
+        for index, option in enumerate(options):
+            msg += f"{option} : {index}\n"
+        message = await ctx.send(msg + "```", delete_after=60)
+        reactions = [
+            "0️⃣",
+            "1️⃣",
+            "2️⃣",
+            "3️⃣",
+            "4️⃣",
+            "5️⃣",
+            "6️⃣",
+            "7️⃣",
+            "8️⃣",
+            "9️⃣"
+        ]
+        for i in range(len(options)):
+            await message.react(reactions[i])
+
+
 
         
     @Extender.on("message")
@@ -240,6 +265,6 @@ class Ext(Extender, name="Fun", description="General Fun commands here"):
                 if len(message.attachments) > 0:
                     for atch in message.attachments:
                         msg += f"\n{atch.proxy_url}\n"
-                    await channel.send(msg)
+                    await channel.send(msg, delete_after=60)
                 else:
-                    await channel.send(msg)
+                    await channel.send(msg, delete_after=60)
