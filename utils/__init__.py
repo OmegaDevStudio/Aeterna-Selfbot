@@ -1,1 +1,0 @@
-from .ascii import logo

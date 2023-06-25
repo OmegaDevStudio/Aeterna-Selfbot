@@ -1,5 +1,7 @@
 import datetime
+import os
 import re
+import sys
 from time import time
 
 import aiohttp
@@ -8,8 +10,10 @@ from aioconsole import aprint
 from aiohttp import ClientSession
 from selfcord import Bot, Context, Extender, Message
 
+from .. import TextEmbed
 
-class Ext(Extender, name="Util", description="Uttility related commands here"):
+
+class Ext(Extender, name="Util", description="Utility related commands here"):
     def __init__(self, bot: Bot) -> None:
         self.bot: Bot = bot
         self.nitro_toggle: bool = False
@@ -31,10 +35,10 @@ class Ext(Extender, name="Util", description="Uttility related commands here"):
         async with aiohttp.ClientSession() as session:
             async with session.get(f"http://ip-api.com/json/{ip}") as resp:
                 json = await resp.json()
-                msg = "```ini\n"
+                msg = TextEmbed().title("IP Geolocation")
             for key, value in json.items():
-                msg += f"[ {key} ] : {value}\n"
-            await ctx.send(f"{msg}```", delete_after=60)
+                msg.add_field(key, value)
+            await ctx.send(msg, delete_after=60)
     @Extender.cmd(
         description="Gathers information regarding token", aliases=["tdox", "tinfo"]
     )
@@ -49,10 +53,9 @@ class Ext(Extender, name="Util", description="Uttility related commands here"):
                 "get", "/users/@me", headers={"authorization": _token}
             )
         if data is not None:
-            msg = "```ini\n[ Token Information ]\n\n"
+            msg = TextEmbed("Token Information")
             for key, value in data.items():
-                msg += f"[ {key} ] : [ {value} ]\n"
-            msg += "```"
+                msg.add_field(key, value)
             await ctx.send(msg, delete_after=60)
         else:
             await ctx.send("Token is Invalid!", delete_after=60)
@@ -62,10 +65,10 @@ class Ext(Extender, name="Util", description="Uttility related commands here"):
         """Toggles the nitro sniper, the nitro sniper attempts to redeem any nitro gift code immediately as the gateway receives it. Information whether the redeeming of the gift was successful or not is displayed via the console."""
         if toggle.lower() == "on" or toggle.lower() == "true":
             self.nitro_toggle = True
-            await ctx.reply(f"```ini\n[ Nitro Sniper is ON ]```", delete_after=60)
+            await ctx.reply("**Nitro Sniper is ON**", delete_after=60)
         elif toggle.lower() == "off" or toggle.lower() == "false":
             self.nitro_toggle = False
-            await ctx.reply(f"```ini\n[ Nitro Sniper is OFF ]```", delete_after=60)
+            await ctx.reply("**Nitro Sniper is OFF**", delete_after=60)
 
     @Extender.cmd(
         description="Toggles Message Logger",
@@ -75,10 +78,10 @@ class Ext(Extender, name="Util", description="Uttility related commands here"):
         """Toggles the message sniper, attempts to display deleted messages via the console, can only gather the full data of deleted messages after the bot starts running since they are cached, messages prior are not cached and therefore cannot be completely logged."""
         if toggle.lower() == "on" or toggle.lower() == "true":
             self.msg_toggle = True
-            await ctx.reply(f"```ini\n[ Message Logger is ON ]```", delete_after=60)
+            await ctx.reply("**Message Logger is ON**", delete_after=60)
         elif toggle.lower() == "off" or toggle.lower() == "false":
             self.msg_toggle = False
-            await ctx.reply(f"```ini\n[ Message Logger is OFF ]```", delete_after=60)
+            await ctx.reply("**Message Logger is OFF**", delete_after=60)
 
     @Extender.cmd(
         description="Toggles Invite Logger",
@@ -88,10 +91,10 @@ class Ext(Extender, name="Util", description="Uttility related commands here"):
         """Toggles the invite logger, attempts to display any/all invites posted in chat via the console."""
         if toggle.lower() == "on" or toggle.lower() == "true":
             self.inv_toggle = True
-            await ctx.reply(f"```ini\n[ Invite Logger is ON ]```", delete_after=60)
+            await ctx.reply("**Invite Logger is ON**", delete_after=60)
         elif toggle.lower() == "off" or toggle.lower() == "false":
             self.inv_toggle = False
-            await ctx.reply(f"```ini\n[ Invite Logger is OFF ]```", delete_after=60)
+            await ctx.reply("**Invite Logger is OFF**", delete_after=60)
 
     @Extender.cmd(description="Purges all messages in chat", aliases=["wipe"])
     async def purge(self, ctx: Context, amount: int = 100):
@@ -103,14 +106,13 @@ class Ext(Extender, name="Util", description="Uttility related commands here"):
     async def afk(self, ctx: Context, *, message: str):
         self.afk_message = message
         self.timestamp = int(time())
-        await ctx.send(f"```ini\n[ USER IS AFK ]\n{message}```\n**<t:{self.timestamp}:R>**")
+        await ctx.send(f">>> # USER IS AFK\n*{message}*\n**<t:{self.timestamp}:R>**")
 
     @Extender.cmd(description="Snipes last send message")
     async def snipe(self, ctx: Context):
         for message in reversed(self.bot.user.deleted_messages):
             if message.channel == ctx.channel:
-                msg = f"```ini\n[ {datetime.datetime.fromtimestamp(message.deleted_time).strftime('%H:%M:%S')} ] [ {message.author.name} ] : {message.content}```"
-
+                msg = TextEmbed().title("Sniped Message").add_field(f"{datetime.datetime.fromtimestamp(message.deleted_time).strftime('%H:%M:%S')} | {message.author.name}", message.content)
                 if len(message.attachments) > 0:
                     for atch in message.attachments:
                         msg += f"{atch.proxy_url}\n"
@@ -174,6 +176,6 @@ INVITE: {matches}
         if self.afk_message is not None:
             for user in message.mentions:
                 if user == self.bot.user:
-                    await message.channel.reply(message, f"```ini\n[ USER IS AFK]\n{self.afk_message}```\n**<t:{self.timestamp}:R>**")
+                    await message.channel.reply(f">>> # USER IS AFK\n*{message}*\n**<t:{self.timestamp}:R>**")
             if (message.author == self.bot.user) and (not self.afk_message in message.content):
                 self.afk_message = None

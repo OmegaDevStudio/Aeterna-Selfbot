@@ -2,6 +2,8 @@ from aioconsole import aprint
 from selfcord import (Bot, Context, DMChannel, Extender, GroupChannel, Message,
                       Messageable, User)
 
+from .. import TextEmbed
+
 
 class Ext(Extender, name="Comms", description="Communication related commands here"):
     def __init__(self, bot: Bot) -> None:
@@ -17,10 +19,10 @@ class Ext(Extender, name="Comms", description="Communication related commands he
         if chan is None:
             user: User = await self.bot.get_user(user)
             self.users.append(user)
-            await ctx.reply(f"Successfully appended `{user.name}` to Comms list", delete_after=60)
+            await ctx.reply(f"Successfully appended **`{user.name}`** to Comms list", delete_after=60)
         else:
             self.channels.append(chan)
-            await ctx.reply(f"Successfully appended `{chan.name}` to Comms list", delete_after=60)
+            await ctx.reply(f"Successfully appended **`{chan.name}`** to Comms list", delete_after=60)
 
     @Extender.cmd(description="Removes a user/channel from the comms list")
     async def remove(self, ctx: Context, user: str):
@@ -29,23 +31,22 @@ class Ext(Extender, name="Comms", description="Communication related commands he
         if channel is None:
             user: User = await self.bot.get_user(user)
             self.users.remove(user)
-            await ctx.reply(f"Successfully removed `{user.name}` from the Comms list", delete_after=60)
+            await ctx.reply(f"Successfully removed **`{user.name}`** from the Comms list", delete_after=60)
         else:
             self.channels.remove(channel)
             await ctx.reply(
-                f"Successfully removed `{channel.name}` from the Comms list", delete_after=60
+            f"Successfully removed **`{channel.name}`** from the Comms list", delete_after=60
             )
 
     @Extender.cmd(description="Displays the users in the comms list", aliases=["show"])
     async def display(self, ctx: Context):
         """Displays the users in the communications list for interaction between dms"""
-        msg = "```ini\nCommunications List\n\nUsers\n"
+        msg = TextEmbed().title("Communications List").subheading("Users")
         for user in self.users:
-            msg += f"[ {user.name} ]\n"
+            msg.add_field(user.name, user.id)
         msg += "\n\nChannels\n"
         for channel in self.channels:
-            msg += f"[ {channel.name} ]\n"
-        msg += "```"
+            msg.add_field(channel.name, channel.id)
         await ctx.reply(msg, delete_after=60)
 
     @Extender.cmd(description="Clears the comms list", aliases=["remove-all"])
@@ -69,12 +70,17 @@ class Ext(Extender, name="Comms", description="Communication related commands he
                     isinstance(message.channel, DMChannel)
                     and message.author in self.users
                 ):
+                    msg = f"```ini\n[ {message.author.name} ] : {message.content}```"
+                    if len(message.attachments) > 0:
+                        for atch in message.attachments:
+                            msg += f"\n{atch.proxy_url}\n"
                     for user in self.users:
                         if message.author == user:
                             continue
                         channel = await self.bot.create_dm(int(user.id))
+                        
                         await channel.send(
-                            f"```ini\n[ {message.author.name} ] : {message.content}```"
+                            msg, delete_after=60
                         )
 
                     for channel in self.channels:
@@ -82,7 +88,7 @@ class Ext(Extender, name="Comms", description="Communication related commands he
                             continue
 
                         await channel.send(
-                            f"```ini\n[ {message.author.name} ] : {message.content}```"
+                            msg
                         , delete_after=60
                         )
 
@@ -90,16 +96,20 @@ class Ext(Extender, name="Comms", description="Communication related commands he
                     isinstance(message.channel, GroupChannel)
                     and message.channel in self.channels
                 ):
+                    msg = f"```ini\n[ {message.author.name} ] : {message.content}```"
+                    if len(message.attachments) > 0:
+                        for atch in message.attachments:
+                            msg += f"\n{atch.proxy_url}\n"
                     for channel in self.channels:
                         if message.channel == channel:
                             continue
                         await channel.send(
-                            f"```ini\n[ {message.author.name} ] : {message.content}```", delete_after=60
+                            msg, delete_after=60
                         )
                     for user in self.users:
                         if message.author == user:
                             continue
                         channel = await self.bot.create_dm(int(user.id))
                         await channel.send(
-                            f"```ini\n[ {message.author.name} ] : {message.content}```", delete_after=60
+                            msg, delete_after=60
                         )

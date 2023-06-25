@@ -7,6 +7,8 @@ from aioconsole import aprint
 from faker import Faker
 from selfcord import Bot, Context, Extender, Profile, User, Voiceable
 
+from .. import TextEmbed
+
 
 class Ext(Extender, name="Fun", description="General Fun commands here"):
     def __init__(self, bot: Bot) -> None:
@@ -34,7 +36,7 @@ class Ext(Extender, name="Fun", description="General Fun commands here"):
         """Attempts to rate someones level of homosexuality. This is calculated by the amount of hairs on their thighs. Less hair is often associated with being a femboy and therefore gay."""
         user: User = await self.bot.get_user(person)
         rng = random.randint(1, 100)
-        msg = f"{user.name} is {rng}% Gay :rainbow_flag:"
+        msg = f"{user.name} is **{rng}%** Gay :rainbow_flag:"
         await ctx.reply(msg, delete_after=60)
 
     @Extender.cmd(
@@ -44,7 +46,7 @@ class Ext(Extender, name="Fun", description="General Fun commands here"):
         """Attempts to rate someones level of racism. THis is calculated by gathering their ancestral history and determining links."""
         user: User = await self.bot.get_user(person)
         rng = random.randint(1, 100)
-        await ctx.reply(f"{user.name} is {rng}% Racist :rage:", delete_after=60)
+        await ctx.reply(f"{user.name} is **{rng}%** Racist :rage:", delete_after=60)
 
     @Extender.cmd(description="Express love for balls")
     async def balls(self, ctx: Context):
@@ -67,9 +69,9 @@ class Ext(Extender, name="Fun", description="General Fun commands here"):
             if user == self.bot.user:
                 return
             self.copy: User = user
-            await ctx.reply(f"Began copying {user.name}", delete_after=60)
+            await ctx.reply(f"Began copying **{user.name}**", delete_after=60)
         else:
-            await ctx.reply(f"Stopped copying {self.copy.name}", delete_after=60)
+            await ctx.reply(f"Stopped copying **{self.copy.name}**", delete_after=60)
             self.copy = None
 
     @Extender.cmd(description="Does Otax on specified user", aliases=["hack"])
@@ -206,7 +208,7 @@ class Ext(Extender, name="Fun", description="General Fun commands here"):
     @Extender.cmd(description="Calculates length of penis for a user", aliases=['dick', 'shlong', 'pp'])
     async def penis(self, ctx: Context, user: str):
         user = await self.bot.get_user(user)
-        await ctx.reply(f"```ini\n[ {user.name} penis ]\n\n8{'=' * random.randint(1,10)}D```", delete_after=60)
+        await ctx.reply(f">>> # {user.name} penis\n\n**8{'=' * random.randint(1,10)}D**", delete_after=60)
 
     @Extender.cmd(description="Sends cool cat pics", aliases=['gato'])
     async def cat(self, ctx: Context):
@@ -232,12 +234,12 @@ class Ext(Extender, name="Fun", description="General Fun commands here"):
     async def poll(self, ctx: Context, question: str, *options):
         if len(options) > 10:
             await ctx.reply("Can't create poll with more than 10 options")
-        msg = "```ini\n"
-        msg += f"[ QUESTION ]\n{question}\n"
-        msg += "[ OPTIONS ]\n"
+        
+        msg = f">>> # Poll Question\n{question}\n"
+        msg += "## Options\n"
         for index, option in enumerate(options):
-            msg += f"{option} : {index}\n"
-        message = await ctx.send(msg + "```", delete_after=60)
+            msg += f"**`{option}`**\n"
+        message = await ctx.send(msg, delete_after=60)
         reactions = [
             "0️⃣",
             "1️⃣",

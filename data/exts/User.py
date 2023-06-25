@@ -4,6 +4,8 @@ import selfcord
 from aioconsole import aprint
 from selfcord import Bot, Context, Extender, Profile, User
 
+from .. import TextEmbed
+
 
 class Ext(Extender, name="User", description="User related commands here"):
     def __init__(self, bot: Bot) -> None:
@@ -47,30 +49,26 @@ class Ext(Extender, name="User", description="User related commands here"):
     async def whois(self, ctx: Context, user: str):
         """Attempts to gather information regarding a user. Can gather profile data, basic user data such as date of creation and mutual friends."""
         user: User = await self.bot.get_user(user)
-        msg = f"```ini\n[ {user} ]\n\n"
-        msg += f"[ ID ] : {user.id}\n[ Bot? ] : {user.bot_acc}\n"
+        msg = TextEmbed().title(f"Whois {user}")
         tok = user.b64token.replace("==", "")
-        msg += f"[ B64Token ] : {tok}\n"
-        msg += f"[ Created at ] : {user.created_at}\n"
-        msg += f"[ Public Flags ] : {user.public_flags}\n"
-        msg += f"[ Raw Public Flags ] : {user.raw_public_flags}\n"
+        msg.add_field("ID", user.id)
+        msg.add_field("Bot?", user.bot_acc)
+        msg.add_field("B64 Token", tok)
+        msg.add_field("Created at", user.created_at)
+        msg.add_field("Public Flags", user.public_flags)
+        msg.add_field("Raw Public Flags", user.raw_public_flags)
+
         profile: Profile = await user.get_profile()
         if profile is not None:
-            msg += f"[ Premium ] : {profile.premium_type}\n"
-            msg += "[ Mutual Guilds ] : \n"
-            for guild in profile.mutual_guilds:
-                msg += f"{guild.name}\n" if guild is not None else "None"
-
-            msg += "[ Connected Accounts ] : \n"
-            for account in profile.connected_accounts:
-                msg += f"{account.name} : {account.type}\n"
-            msg += f"[ Bio ] :\n{profile.bio}\n"
-        msg += "[ Mutual Friends ] : \n"
-        for friend in await user.get_mutual_friends():
-            msg += f"{friend}\n"
-        msg += "```"
-        msg += f"**BANNER:**{user.banner_url}\n**AVATAR:**{user.avatar_url}"
-
+            msg.add_field("Premium", profile.premium_type)
+            msg.add_items("Mutual Guilds", profile.mutual_guilds, attr="name")
+            msg.add_manual("**`Connected Accounts`**\n")
+            for acc in profile.connected_accounts:
+                msg.add_field(acc.type, acc.name)
+            msg.add_field("Bio\n", profile.bio)
+        msg.add_items("Mutual Friends", await user.get_mutual_friends(), attr="name")
+        msg.add_field("Banner", user.banner_url)
+        msg.add_field("Avatar", user.avatar_url)
         await ctx.reply(msg, delete_after=60)
 
     @Extender.cmd(description="Shows avatar of person", aliases=["av"])
@@ -98,10 +96,10 @@ class Ext(Extender, name="User", description="User related commands here"):
     async def plog(self, ctx: Context, toggle: str):
         if toggle.lower() == "on" or toggle.lower() == "true":
             self.presence_toggle = True
-            await ctx.reply("```ini\n[ Presence Logger is ON ]```", delete_after=60)
+            await ctx.reply("**Presence Logger is ON**", delete_after=60)
         elif toggle.lower() == "off" or toggle.lower() == "false":
             self.presence_toggle = False
-            await ctx.reply("```ini\n[ Presence Logger is OFF ]```", delete_after=60)
+            await ctx.reply("**Presence Logger is OFF**", delete_after=60)
 
     @Extender.on("presence_update")
     async def presence_logger(
@@ -126,3 +124,4 @@ STATUS: {status}\n"""
                     msg += f"{key} : {value}\n"
             if activity != None:
                 msg += f"ACTIVITY:\n{activity}"
+            await aprint(msg)
