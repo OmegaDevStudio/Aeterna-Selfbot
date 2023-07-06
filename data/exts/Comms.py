@@ -13,11 +13,11 @@ class Ext(Extender, name="Comms", description="Communication related commands he
         self.toggle: bool = True
 
     @Extender.cmd(description="Add a user/channel to Comms")
-    async def add(self, ctx: Context, user: str):
+    async def add(self, ctx: Context, some: str):
         """Adds a user/channel to the communication list used to interact between dms"""
-        chan: GroupChannel | None = self.bot.get_channel(user)
+        chan: GroupChannel | None = self.bot.get_channel(some)
         if chan is None:
-            user: User = await self.bot.get_user(user)
+            user: User = await self.bot.get_user(some)
             self.users.append(user)
             await ctx.reply(f"Successfully appended **`{user.name}`** to Comms list", delete_after=60)
         else:
@@ -25,11 +25,11 @@ class Ext(Extender, name="Comms", description="Communication related commands he
             await ctx.reply(f"Successfully appended **`{chan.name}`** to Comms list", delete_after=60)
 
     @Extender.cmd(description="Removes a user/channel from the comms list")
-    async def remove(self, ctx: Context, user: str):
+    async def remove(self, ctx: Context, some: str):
         """Deletes the user/channel from the communications list for ineraction between dms"""
-        channel: GroupChannel | None = self.bot.get_channel(user)
+        channel: GroupChannel | None = self.bot.get_channel(some)
         if channel is None:
-            user: User = await self.bot.get_user(user)
+            user: User = await self.bot.get_user(some)
             self.users.remove(user)
             await ctx.reply(f"Successfully removed **`{user.name}`** from the Comms list", delete_after=60)
         else:

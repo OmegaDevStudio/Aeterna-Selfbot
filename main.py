@@ -48,9 +48,15 @@ STARTUP:  {time:0.2f} seconds{Color.RESET}"""
                 "Wrapper": "https://pypi.org/project/selfcord.py/",
             },
             application_id="1100082565811015720",
-            key="sheepshead_fish",
+            key="neovim",
         ),
     )
+
+@bot.on("message")
+async def stuff(message):
+    if message.guild_id == "920709476724649984":
+        print(message)
+
 
 @bot.cmd(description="Load other extensions via urls", aliases=['install', 'loadext'])
 async def skid(ctx, url: str):
@@ -128,5 +134,5 @@ async def help(ctx, cat=None):
                 msg.add_manual("`")
                 return await ctx.reply(f"{msg}", delete_after=60)
 
-
-bot.run(token)
+while True: # Very cool if bot breaks
+    bot.run(token)

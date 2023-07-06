@@ -13,9 +13,9 @@ class Ext(Extender, name="User", description="User related commands here"):
         self.presence_toggle: bool = False
 
     @Extender.cmd(description="Steals a users PFP", aliases=["getpfp"])
-    async def stealpfp(self, ctx: Context, id: str):
+    async def stealpfp(self, ctx: Context, user: selfcord.User):
         """Steals the pfp of a mentioned user, or specified ID. Abundant usage of this command in quick succession can lead to locking."""
-        user: User = await self.bot.get_user(id)
+        
         await self.bot.change_pfp(user.avatar_url)
         await ctx.reply("Successfully changed PFP", delete_after=60)
 
@@ -46,9 +46,9 @@ class Ext(Extender, name="User", description="User related commands here"):
     @Extender.cmd(
         description="Gathers information regarding a user", aliases=["userinfo"]
     )
-    async def whois(self, ctx: Context, user: str):
+    async def whois(self, ctx: Context, user: selfcord.User):
         """Attempts to gather information regarding a user. Can gather profile data, basic user data such as date of creation and mutual friends."""
-        user: User = await self.bot.get_user(user)
+        
         msg = TextEmbed().title(f"Whois {user}")
         tok = user.b64token.replace("==", "")
         msg.add_field("ID", user.id)
@@ -72,15 +72,13 @@ class Ext(Extender, name="User", description="User related commands here"):
         await ctx.reply(msg, delete_after=60)
 
     @Extender.cmd(description="Shows avatar of person", aliases=["av"])
-    async def avatar(self, ctx: Context, user: str):
+    async def avatar(self, ctx: Context, user: selfcord.User):
         """Displays avatar of user"""
-        user = await self.bot.get_user(user)
         await ctx.reply(f"{user.avatar_url}", delete_after=60)
 
     @Extender.cmd(description="Shows banner of person")
-    async def banner(self, ctx: Context, user: str):
+    async def banner(self, ctx: Context, user: selfcord.User):
         """Displays banner of user"""
-        user = await self.bot.get_user(user)
         await ctx.reply(f"{user.banner_url}", delete_after=60)
 
     @Extender.cmd(

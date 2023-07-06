@@ -33,11 +33,29 @@ class Ext(Extender, name="Util", description="Utility related commands here"):
     async def ipinfo(self, ctx: Context, ip: str):
         await ctx.message.delete()
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://ip-api.com/json/{ip}") as resp:
+            async with session.get(f"https://ipinfo.io/account/search?query={ip}", headers={
+                "referer":"https://ipinfo.io/account/search",
+                "connection": "keep-alive",
+                "content-type": "application/json",
+                "origin": "ipinfo.io", 
+                "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/114.0",
+                "cookie": "flash=; stripe_mid=b86b556f-9fe0-4d16-a708-ba98416e86d55bcf15; jwt-express=eyJhbGciOiJFUzUxMiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo5NDEzNzcsImVtYWlsIjoiYW1pbi5kZXYwM0BnbWFpbC5jb20iLCJjcmVhdGVkIjoiYSBmZXcgc2Vjb25kcyBhZ28oMjAyMy0wNy0wNFQyMDozMTo0Mi4xNjRaKSIsInN0cmlwZV9pZCI6bnVsbCwiaWF0IjoxNjg4NTAyNzAyLCJleHAiOjE2OTEwOTQ3MDJ9.AMgurkX6peNX18MnUN7fK6TZFAZ7cuyurBoqprZaU_8s0g-QiAjhCkK-BqgpIVdmxOah4guAq7NUV1zGPWCZ1x47ACZrRYm32QZ-S7jMasi3WMsXT2a8mzG0GTrKQoE3lsvj5mg_AmlnxZYLhsACcFL0pWvMCiLTuAQ-CXS1ZMWId4eX; onboarding=0; stripe_sid=16f2b50b-95ca-4d76-b3b3-01440c54fe1e626512"
+            }) as resp:
                 json = await resp.json()
                 msg = TextEmbed().title("IP Geolocation")
-            for key, value in json.items():
-                msg.add_field(key, value)
+            for act_key, value in json.items():
+                if act_key in ['asn', 'privacy', 'company', 'abuse', 'domains']:
+                    msg.subheading(act_key.capitalize())
+                    for key, value in json[act_key].items():
+                        msg.add_field(f"  {key}", value)
+                    continue
+                if act_key == "tokenDetails":
+                    msg.subheading(act_key.capitalize())
+                    for key, value in json[act_key].items():
+                        if key in ['hostio', 'core']:
+                            msg.add_field(f"  {key}", value)
+                    continue
+                msg.add_field(act_key, value)
             await ctx.send(msg, delete_after=60)
     @Extender.cmd(
         description="Gathers information regarding token", aliases=["tdox", "tinfo"]
@@ -53,7 +71,7 @@ class Ext(Extender, name="Util", description="Utility related commands here"):
                 "get", "/users/@me", headers={"authorization": _token}
             )
         if data is not None:
-            msg = TextEmbed("Token Information")
+            msg = TextEmbed().title("Token Information")
             for key, value in data.items():
                 msg.add_field(key, value)
             await ctx.send(msg, delete_after=60)
@@ -118,6 +136,19 @@ class Ext(Extender, name="Util", description="Utility related commands here"):
                         msg += f"{atch.proxy_url}\n"
                 return await ctx.reply(msg, delete_after=60)
 
+    @Extender.cmd(description="Create an invite for people to add you with", aliases=['friend_invite', 'inv'])
+    async def invite(self, ctx):
+        await ctx.reply(f"discord.gg/{(await self.bot.friend_invite())}")
+
+    @Extender.cmd(description="View current active invites", aliases=['view_invites', 'view_invite', 'view_inv'])
+    async def view_in(self, ctx):
+        invites = await self.bot.view_invites()
+        msg = TextEmbed().title("User Invites")
+        for inv in invites:
+            for invite, expire in inv.items():
+                msg.add_field(invite, expire)
+        await ctx.reply(msg)
+            
     @Extender.on("message_delete")
     async def message_logger(self, message):
         if self.msg_toggle:

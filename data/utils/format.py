@@ -35,7 +35,7 @@ class TextEmbed:
         return self
 
     def title(self, msg) -> TextEmbed:
-        self.msg += f"# {msg}\n\n"
+        self.msg += f"# `{msg}`\r\n\n"
         return self
 
     def description(self, msg) -> TextEmbed:
@@ -50,7 +50,7 @@ class TextEmbed:
         return self
 
     def add_items(self, key, values, attr: str | None = None) -> TextEmbed:
-        self.msg += f"**`{key}`**\n"
+        self.msg += f"# `{key}`\n"
         if attr is None:
             for val in values:
                 if val != "":
@@ -69,7 +69,7 @@ class TextEmbed:
         return self
 
     def subheading(self, msg) -> TextEmbed:
-        self.msg += f"## {msg}\n"
+        self.msg += f"## `{msg}`\n"
         return self
     
     def add_manual(self, msg) -> TextEmbed:

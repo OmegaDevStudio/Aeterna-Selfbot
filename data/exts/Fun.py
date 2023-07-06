@@ -3,6 +3,7 @@ import random
 import string
 
 import aiohttp
+import selfcord
 from aioconsole import aprint
 from faker import Faker
 from selfcord import Bot, Context, Extender, Profile, User, Voiceable
@@ -32,9 +33,8 @@ class Ext(Extender, name="Fun", description="General Fun commands here"):
         await ctx.spam(amount, message)
 
     @Extender.cmd(description="Calculate someones level of gayness", aliases=["grate"])
-    async def gayrate(self, ctx: Context, person: str):
+    async def gayrate(self, ctx: Context, user: selfcord.User):
         """Attempts to rate someones level of homosexuality. This is calculated by the amount of hairs on their thighs. Less hair is often associated with being a femboy and therefore gay."""
-        user: User = await self.bot.get_user(person)
         rng = random.randint(1, 100)
         msg = f"{user.name} is **{rng}%** Gay :rainbow_flag:"
         await ctx.reply(msg, delete_after=60)
@@ -42,9 +42,8 @@ class Ext(Extender, name="Fun", description="General Fun commands here"):
     @Extender.cmd(
         description="Calculate someones level of racism", aliases=["racerate"]
     )
-    async def racistrate(self, ctx: Context, person: str):
+    async def racistrate(self, ctx: Context, user: selfcord.User):
         """Attempts to rate someones level of racism. THis is calculated by gathering their ancestral history and determining links."""
-        user: User = await self.bot.get_user(person)
         rng = random.randint(1, 100)
         await ctx.reply(f"{user.name} is **{rng}%** Racist :rage:", delete_after=60)
 
@@ -62,10 +61,9 @@ class Ext(Extender, name="Fun", description="General Fun commands here"):
             await message.edit(msg)
 
     @Extender.cmd(description="Copies a users messages", aliases=["copy"])
-    async def copycat(self, ctx: Context, user: str = None):
+    async def copycat(self, ctx: Context, user: selfcord.User | None = None):
         """Copies a users messages, omit user parameter to turn off"""
         if user is not None:
-            user: User = await self.bot.get_user(user)
             if user == self.bot.user:
                 return
             self.copy: User = user
@@ -75,10 +73,9 @@ class Ext(Extender, name="Fun", description="General Fun commands here"):
             self.copy = None
 
     @Extender.cmd(description="Does Otax on specified user", aliases=["hack"])
-    async def otax(self, ctx: Context, user: str):
+    async def otax(self, ctx: Context, user: selfcord.User):
         """Hacks a user, displaying their entire token, name, and other credentials. Very scary otax"""
         await ctx.message.delete()
-        user: User = await self.bot.get_user(user)
         message = "```ini\n[ Began Otax.rs ]```"
 
         msg = await ctx.send(message)
@@ -206,8 +203,7 @@ class Ext(Extender, name="Fun", description="General Fun commands here"):
         await ctx.reply(f"{json['joke']}", delete_after=60)
 
     @Extender.cmd(description="Calculates length of penis for a user", aliases=['dick', 'shlong', 'pp'])
-    async def penis(self, ctx: Context, user: str):
-        user = await self.bot.get_user(user)
+    async def penis(self, ctx: Context, user: selfcord.User):
         await ctx.reply(f">>> # {user.name} penis\n\n**8{'=' * random.randint(1,10)}D**", delete_after=60)
 
     @Extender.cmd(description="Sends cool cat pics", aliases=['gato'])
